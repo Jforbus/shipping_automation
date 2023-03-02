@@ -10,7 +10,6 @@ import gspread as gs
 
 # Function for reading/writing Gsheets data with pandas
 def pandas_to_sheets(url,ws_name,df=None,mode='r'):
-
     # helper function for handling gsheets using gspread and gspread_dataframe
     # has 3 modes, w - write: replace existing sheet data, a - append: keep existing data and add new
     # r - read: read data from gsheets
@@ -18,9 +17,8 @@ def pandas_to_sheets(url,ws_name,df=None,mode='r'):
     gc = gs.oauth(credentials_filename=r"C:\Users\jacob\Desktop\Shipping_Robot\oauth\credentials.json", 
               authorized_user_filename=r"C:\Users\jacob\Desktop\Shipping_Robot\oauth\authorized_user.json")
 
-   
     ws = gc.open_by_url(url).worksheet(ws_name) # open worksheet by GSheet URL and worksheet name
-    # clear and write new data to worsheet
+    # clear and write new data to worksheet
     if(mode=='w'):
         ws.clear()
         gd.set_with_dataframe(worksheet=ws,dataframe=df,include_index=False,include_column_header=True,resize=True)
