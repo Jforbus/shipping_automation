@@ -10,7 +10,7 @@ import pandas as pd
 
 # created functions for importing and emailing data
 from functions import pandas_to_sheets, email_df
-
+import os
 
 # Import Production data from Google Sheets
 # Collect data using gspread_dataframe
