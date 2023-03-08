@@ -41,7 +41,7 @@ joined_df = ca_df.append(tx_df)
 # filter completed for unscheduled, ready to ship
 joined_df['Notes'] = joined_df['Notes'].str.lower() # lowercase for string matching
 joined_df = joined_df[(joined_df['Notes'].str.contains('shipping docs ready|ready to ship')) & 
-                      (~joined_df['Shipping Arranger'].str.contains('WILL CALL|TBD')) & 
+                      (joined_df['Shipping Arranger'].str.contains('VALEW|1954 MFG')) & 
                       (joined_df['Est. Ship Date'] == "")]
 
 # remove duplicate location info from customer column
