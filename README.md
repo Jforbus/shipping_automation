@@ -15,11 +15,15 @@
         - Append: Takes URL, Worksheet name, and a pandas df, adds data from the dataframe below existing data.
 
 ![pandas_to_sheets](https://github.com/Jforbus/shipping_automation/blob/main/images/pandas_to_sheets2X.png)
+
 2. The completed units for each facility are selected from the dataframe using string matching and index slicing.
+
 
 3. The completed units are filtered for only those ready to ship.
 
+
 4. The resulting dataframe of units ready to ship is tranformed into a shipping data table using list comprehension and dictionaries.
+
 
 5. The resulting dataframe is appended to the output Gsheet for scheduling, and emailed as an xslx file to the necessary parties using smptlib.
 
