@@ -20,13 +20,13 @@ vi_df = pandas_to_sheets(VI,"PR") # get data from gsheets using created function
 vi_df.fillna("",inplace=True) # Remove Nonetypes
 
 # Select CA Completed Units
-ca_start = vi_df[vi_df['VIN #'].str.match('COMPLETED WEST', na=False)].index[0] # find start of CA Completed units
+ca_start = vi_df[vi_df['Shipping Arranger'].str.match('V_START', na=False)].index[0] # find start of CA Completed units
 cdf = vi_df.iloc[ca_start+2:] # remove data before selection
 ca_end = cdf[cdf['VIN #'] == ''].index[0] # find end of CA Completed units
 ca_df = vi_df.iloc[ca_start+2:ca_end].copy()
 
 # Select TX Completed Units
-tx_start = vi_df[vi_df['VIN #'].str.match('COMPLETED EAST', na=False)].index[0] # find start of TX Completed units
+tx_start = vi_df[vi_df['Shipping Arranger'].str.match('1954_START', na=False)].index[0] # find start of TX Completed units
 tdf = vi_df.iloc[tx_start+1:] # remove data before selection
 tx_end = tdf[tdf['VIN #'] == ''].index[0] # find end of TX Completed units
 tx_df = vi_df.iloc[tx_start+1:tx_end].copy()
