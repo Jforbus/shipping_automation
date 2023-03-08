@@ -14,7 +14,7 @@
         - Write: Takes URL, Worksheet name, and a pandas df, clears or creates new worksheet and adds data from the dataframe.
         - Append: Takes URL, Worksheet name, and a pandas df, adds data from the dataframe below existing data.
 
-![pandas_to_sheets](shipping_automation\images\pandas_to_sheets2X.png)
+![pandas_to_sheets](https://github.com/Jforbus/shipping_automation/blob/main/images/pandas_to_sheets2X.png)
 2. The completed units for each facility are selected from the dataframe using string matching and index slicing.
 
 3. The completed units are filtered for only those ready to ship.
