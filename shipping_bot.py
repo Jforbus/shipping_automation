@@ -40,7 +40,7 @@ joined_df = ca_df.append(tx_df)
 
 # filter completed for unscheduled, ready to ship
 joined_df['Notes'] = joined_df['Notes'].str.lower() # lowercase for string matching
-joined_df = joined_df[(joined_df['Notes'].str.contains('shipping docs ready|ready to ship')) & 
+joined_df = joined_df[(joined_df['Notes'].str.contains('ready to ship')) & 
                       (joined_df['Shipping Arranger'].str.contains('VALEW|1954 MFG')) & 
                       (joined_df['Est. Ship Date'] == "")]
 
@@ -54,7 +54,9 @@ dims = {
     "2000" : "25'L x 8'W x 9'H x 15,000lbs",
     "10" : "25'L x 8'W x 9'H x 15,000lbs",
     "15" : "30'L x 8'W x 9'H x 15,000lbs",
-    "WATER TOWER" : "36'L x 8'W x 13'H x 19,500lbs"
+    "WATER TOWER" : "36'L x 8'W x 13'H x 19,500lbs",
+    "1000" : "22'L x 8'W x 10'H x 20,000lbs",
+    "2000" : "32'L x 8'W x 10'H x 30,000lbs"
 }
 # dictionary of Models
 models = {
@@ -66,17 +68,19 @@ models = {
     "F6" : "FORD",
     "KW" : "KW",
     "PB" : "PB",
-    "INT" : "INT"
+    "INT" : "INT",
+    "WA" : "PORTABLE"
 }
 # dictionary of Axle quantities
 axles = {
-    "132" : "3-Axle",
-    "084" : "2-Axle",
-    "096" : "2-Axle",
-    "108" : "2-Axle",
-    "120" : "2-Axle",
-    "168" : "2-Axle",
-    "170" : "2-Axle" 
+    "132" : "3-Axle Truck X 1",
+    "084" : "2-Axle Truck X 1",
+    "096" : "2-Axle Truck X 1",
+    "108" : "2-Axle Truck X 1",
+    "120" : "2-Axle Truck X 1",
+    "168" : "2-Axle Truck X 1",
+    "170" : "2-Axle Truck X 1",
+    "WER" : "WATER TOWER"
 }
 # dictionary of origin adresses
 origins = {
@@ -91,11 +95,11 @@ origins = {
 # extract last 6 digits of VIN #
 vins = [x[-6:] for x in joined_df['VIN #']] 
 # lookup dimensions for body style in created dict
-dim = [dims[x] for x in joined_df['Body Type'].str.extract(r'(^\d+)|(WATER TOWER)')[0]]
+dim = [dims[x] for x in joined_df['Body Type'].str.extract("(^\d+|WATER TOWER)")[0]]
 # Comine Customer Name and Shipping Address for Destination Info
 dest = [x for x in joined_df[['Customer', 'Shipping Address']].apply(' '.join, axis=1)]
 # create item descriptions from created dicts
-items = [f'{models[x[:2]]} {axles[x[-3:]]} Truck X 1' for x in joined_df['Truck Type']] # create item descriptions from lookups
+items = [f'{models[x[:2]]} {axles[x[-3:]]}' for x in joined_df['Truck Type']] # create item descriptions from lookups
 # delivery cost
 rates = [x for x in joined_df['Delivery Cost']]
 # todays date
