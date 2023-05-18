@@ -6,7 +6,7 @@ from datetime import date
 import pandas as pd
 # created functions for importing and emailing data
 from functions import pandas_to_sheets, email_df, email_msg
-import re
+import os
 
 
 # Import Production data from Google Sheets
@@ -90,49 +90,32 @@ origins = {
 
 # Create Shipping Table
 
-shipping_list = []
-
-for row in joined_df.itertuples(index=False, name=None):
-    try:
-        vin = row[0][-6:]
-    except:
-        vin = "ERROR"
-    try:
-        model = models[row[2][:2]]
-    except:
-        model = "ERROR"
-    try:
-        axle = axles[row[2][-3:]]
-    except:
-        axle = "ERROR"
-    if model and axle != "ERROR":
-        item = f"{model} {axle}"
-    else:
-        item = "ERROR"
-    try:
-        origin = origins[row[-1]]
-    except:
-        origin = "ERROR"
-    try:
-        dest = f"{row[3]} {row[-2]}"
-    except:
-        dest = "ERROR"
-    try:
-        rate = row[6]
-    except:
-        rate = "ERROR"
-    try:
-        dim = dims[re.search(r'(^\d+)|(WATER TOWER)', row[1])[0]]
-    except:
-        dim = "ERROR"
-    try:
-        rts = date.today().strftime("%m/%d/%Y")
-    except:
-        rts = "ERROR"
-
-    shipping_list.append({"STATUS":"Ready", "LOAD #":"TBD", "UNIT QTY": '1', "VIN" : vin, "TOTAL DIMENSIONS" : dim, "ORIGIN": origin, "DESTINATION" : dest,
-           "ITEM DESCRIPTION" : item, "RATE" : rate, "READY TO SHIP" : rts})
-shipping_df = pd.DataFrame(shipping_list)
+# list comprehension for creating ready to ship table
+# extract last 6 digits of VIN #
+vins = [x[-6:] for x in joined_df['VIN #']] 
+# lookup dimensions for body style in created dict
+dim = [dims[x] for x in joined_df['Body Type'].str.extract("(^\d+|WATER TOWER)")[0]]
+# Comine Customer Name and Shipping Address for Destination Info
+dest = [x for x in joined_df[['Customer', 'Shipping Address']].apply(' '.join, axis=1)]
+# create item descriptions from created dicts
+items = [f'{models[x[:2]]} {axles[x[-3:]]}' for x in joined_df['Truck Type']] # create item descriptions from lookups
+# delivery cost
+rates = [x for x in joined_df['Delivery Cost']]
+# todays date
+rts = [date.today().strftime("%m/%d/%Y") for x in range(len(joined_df))]
+# origin address from dict
+origin = [origins[x] for x in joined_df['Origin']]
+# unit quantity
+qty = ['1' for x in range(len(joined_df))]
+# Status placeholder
+stat = ['Ready' for x in range(len(joined_df))]
+# id placeholder
+id = ['TBD' for x in range(len(joined_df))]
+# completed shipping dictionary
+shipping_dict = {"STATUS": stat, "LOAD_#": id,"UNIT_QTY" : qty, "VIN" : vins, "TOTAL DIMENSIONS" : dim, "ORIGIN": origin, "DESTINATION" : dest,
+           "ITEM DESCRIPTION" : items, "RATE" : rates, "READY TO SHIP" : rts}
+# create dataframe from shipping dictionary
+shipping_df = pd.DataFrame(shipping_dict)
 
 
 # if there are units ready to ship
