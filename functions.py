@@ -20,12 +20,16 @@ def pandas_to_sheets(url,ws_name,df=None,mode='r'):
               authorized_user_filename=r"C:\Users\jacob\Desktop\Shipping_Robot\shipping_automation\oauth\authorized_user.json")
     try:
       ws = gc.open_by_url(url).worksheet(ws_name) # open worksheet by GSheet URL and worksheet name
+      print("Authentication Successful")
     except:
-       print("Authentication Expired, Refreshing...")
-       os.remove(r"C:\Users\jacob\Desktop\Shipping_Robot\shipping_automation\oauth\authorized_user.json")
-       ws = gc.open_by_url(url).worksheet(ws_name) # open worksheet by GSheet URL and worksheet name
-    finally:
-       print("Authentication Successful")
+      os.remove(r"C:\Users\jacob\Desktop\Shipping_Robot\shipping_automation\oauth\authorized_user.json")
+      del gc
+      print("Authentication Expired, Refreshing...")
+      gc = gs.oauth(credentials_filename=r"C:\Users\jacob\Desktop\Shipping_Robot\shipping_automation\oauth\credentials.json", 
+              authorized_user_filename=r"C:\Users\jacob\Desktop\Shipping_Robot\shipping_automation\oauth\authorized_user.json")
+      ws = gc.open_by_url(url).worksheet(ws_name) # open worksheet by GSheet URL and worksheet name
+      print("Authentication Successful")
+
     # clear and write new data to worksheet
     if(mode=='w'):
         ws.clear()
